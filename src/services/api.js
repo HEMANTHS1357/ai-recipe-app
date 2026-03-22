@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-// Create axios instance
 const api = axios.create({
     baseURL: API_URL,
     headers: {
@@ -10,32 +9,16 @@ const api = axios.create({
     },
 });
 
-// Request interceptor to add auth token
-api.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
+// Pantry APIs
+export const getPantryItems = () => api.get('/pantry');
+export const addPantryItem = (item) => api.post('/pantry', item);
+export const updatePantryItem = (id, item) => api.put(`/pantry/${id}`, item);
+export const deletePantryItem = (id) => api.delete(`/pantry/${id}`);
 
-// Response interceptor for error handling
-api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            // Token expired or invalid
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/login';
-        }
-        return Promise.reject(error);
-    }
-);
+// Recipe APIs
+export const generateRecipe = (data) => api.post('/recipes/generate', data);
+export const saveRecipe = (recipe) => api.post('/recipes/save', recipe);
+export const getSavedRecipes = () => api.get('/recipes/saved');
+export const deleteRecipe = (id) => api.delete(`/recipes/${id}`);
 
 export default api;
