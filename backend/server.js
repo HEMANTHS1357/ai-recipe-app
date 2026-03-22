@@ -3,6 +3,7 @@ require('dotenv').config({ path: __dirname + '/.env' });
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 
 const pantryRoutes = require('./routes/pantry');
 const recipeRoutes = require('./routes/recipe');
@@ -21,8 +22,10 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api/pantry', pantryRoutes);
 app.use('/api/recipes', recipeRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Recipe App Backend is Running!');
+// Serve frontend in production
+app.use(express.static(path.join(__dirname, '../dist')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
