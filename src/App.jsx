@@ -1,11 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import Pantry from './pages/Pantry';
 import RecipeGenerator from './pages/RecipeGenerator';
@@ -17,38 +13,19 @@ import MealPlanner from './pages/MealPlanner';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+    <Router>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/pantry" element={<Pantry />} />
+        <Route path="/generate" element={<RecipeGenerator />} />
+        <Route path="/recipes" element={<MyRecipes />} />
+        <Route path="/recipes/:id" element={<RecipeDetail />} />
+        <Route path="/meal-plan" element={<MealPlanner />} />
+        <Route path="/shopping-list" element={<ShoppingList />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
 
-          {/* Protected Routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Placeholder routes - to be implemented */}
-          <Route path="/pantry" element={<ProtectedRoute><Pantry /></ProtectedRoute>} />
-          <Route path="/generate" element={<ProtectedRoute><RecipeGenerator /></ProtectedRoute>} />
-          <Route path="/recipes" element={<ProtectedRoute><MyRecipes /></ProtectedRoute>} />
-          <Route path="/recipes/:id" element={<ProtectedRoute><RecipeDetail /></ProtectedRoute>} />
-          <Route path="/meal-plan" element={<ProtectedRoute><MealPlanner /></ProtectedRoute>} />
-          <Route path="/shopping-list" element={<ProtectedRoute><ShoppingList /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-
-          {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Router>
-
-      {/* Toast Notifications */}
       <Toaster
         position="top-right"
         toastOptions={{
@@ -73,20 +50,8 @@ function App() {
           },
         }}
       />
-    </AuthProvider>
+    </Router>
   );
 }
-
-// Temporary Coming Soon component
-const ComingSoon = ({ page }) => {
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{page}</h1>
-        <p className="text-gray-600">Coming soon...</p>
-      </div>
-    </div>
-  );
-};
 
 export default App;

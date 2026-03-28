@@ -13,11 +13,12 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Auto-login with dummy user for boilerplate
         setUser(dummyUser);
+        setLoading(false);
     }, []);
 
     const login = async (email, password) => {

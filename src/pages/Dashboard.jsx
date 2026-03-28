@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { ChefHat, UtensilsCrossed, Calendar, Clock } from 'lucide-react';
+import { ChefHat, UtensilsCrossed, Clock } from 'lucide-react';
 import { getSavedRecipes, getPantryItems } from '../services/api';
 
 const Dashboard = () => {
@@ -21,13 +21,16 @@ const Dashboard = () => {
                 getSavedRecipes(),
                 getPantryItems()
             ]);
+            const recipes = Array.isArray(recipesRes.data) ? recipesRes.data : [];
+            const pantry = Array.isArray(pantryRes.data) ? pantryRes.data : [];
             setStats({
-                totalRecipes: recipesRes.data.length,
-                pantryItems: pantryRes.data.length,
+                totalRecipes: recipes.length,
+                pantryItems: pantry.length,
             });
-            setRecentRecipes(recipesRes.data.slice(0, 5));
+            setRecentRecipes(recipes.slice(0, 5));
         } catch (err) {
             console.error('Failed to load dashboard data');
+            setRecentRecipes([]);
         }
     };
 
@@ -40,7 +43,6 @@ const Dashboard = () => {
                     <p className="text-gray-600 mt-1">Welcome back! Here's your cooking overview</p>
                 </div>
 
-                {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <StatCard
                         icon={<ChefHat className="w-6 h-6" />}
@@ -56,7 +58,6 @@ const Dashboard = () => {
                     />
                 </div>
 
-                {/* Quick Actions */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <Link to="/generate"
                         className="bg-emerald-50 text-emerald-500 p-6 rounded-xl shadow-sm hover:shadow-md transition-all group">
@@ -85,7 +86,6 @@ const Dashboard = () => {
                     </Link>
                 </div>
 
-                {/* Recent Recipes */}
                 <div className="bg-white rounded-xl border border-gray-200 p-6">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-gray-900">Recent Recipes</h2>
