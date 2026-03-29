@@ -3,7 +3,7 @@ const router = express.Router();
 const Recipe = require('../models/Recipe');
 const axios = require('axios');
 
-// Generate recipe using OpenRouter AI
+// Generate recipe using Groq AI
 router.post('/generate', async (req, res) => {
   try {
     const { ingredients, dietary, cuisine } = req.body;
@@ -30,21 +30,22 @@ router.post('/generate', async (req, res) => {
     }`;
 
     const response = await axios.post(
-      'https://openrouter.ai/api/v1/chat/completions',
+      'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: 'openrouter/auto',
-        messages: [{ role: 'user', content: prompt }]
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.7
       },
       {
         headers: {
-          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
           'Content-Type': 'application/json'
         }
       }
     );
 
     const rawText = response.data.choices[0].message.content;
-    console.log('OpenRouter response:', rawText);
+    console.log('Groq response:', rawText);
     const jsonMatch = rawText.match(/\{[\s\S]*\}/);
     const recipeData = JSON.parse(jsonMatch[0]);
 
